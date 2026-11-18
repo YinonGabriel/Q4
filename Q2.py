@@ -1,9 +1,12 @@
 import sys
 import os
 import csv
+import numpy as np
+import matplotlib.pyplot as plt
+from matplotlib.backends.backend_qtagg import FigureCanvasQTAgg as FigureCanvas
+from matplotlib.backends.backend_qtagg import NavigationToolbar2QT as NavigationToolbar
 from PySide6.QtWidgets import (QApplication, QWidget, QVBoxLayout, 
                                QPushButton, QMessageBox, QFileDialog)
-
 class IceCreamApp(QWidget):
     def __init__(self):
         super().__init__()
@@ -20,6 +23,13 @@ class IceCreamApp(QWidget):
         self.load_btn = QPushButton("Load Ice Cream Data")
         self.load_btn.clicked.connect(self.load_file)
         main_layout.addWidget(self.load_btn)
+
+        self.figure, self.ax = plt.subplots(figsize=(6, 4))
+        self.canvas = FigureCanvas(self.figure)
+        self.toolbar = NavigationToolbar(self.canvas, self)
+
+        main_layout.addWidget(self.toolbar)
+        main_layout.addWidget(self.canvas)
 
         self.about_btn = QPushButton("About")
         self.about_btn.clicked.connect(self.show_about)
@@ -53,8 +63,37 @@ class IceCreamApp(QWidget):
                     self.profits.append(profit)
 
             print(f"Loaded {len(self.temperatures)} rows successfully!")
+            self.plot_graph()
 
+    def plot_graph(self):
+        self.ax.clear()
+        self.ax.scatter(self.temperatures, self.profits, s=1)
     
+        self.ax.spines['top'].set_visible(False)
+        self.ax.spines['right'].set_visible(False)
+        
+        self.ax.set_title("Ice Cream Profits vs Outside Temperature")
+        self.ax.set_xlabel("Outside Temperature")
+        self.ax.set_ylabel("Ice Cream Profits")
+        
+        coefficients = np.polyfit(self.temperatures, self.profits, 1)
+        m = coefficients[0] 
+        b = coefficients[1] 
+        
+        trendline_y = []
+        for temp in self.temperatures:
+            y_val = m * temp + b
+            trendline_y.append(y_val)
+            
+        equation_text = f"y = {m:.2f}x + {b:.2f}"
+        self.ax.plot(self.temperatures, trendline_y, color="red", label=equation_text)
+        
+        self.ax.legend()
+        self.canvas.draw()
+
+    def show_about(self):
+        about_text = "Name: Yinon Gabriel Debi\nGitHub: https://github.com/YinonGabriel/Q4"
+        QMessageBox.about(self, "About", about_text)
 
 
 if __name__ == "__main__":
