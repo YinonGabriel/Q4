@@ -32,7 +32,31 @@ class IceCreamApp(QWidget):
         self.setStyleSheet(file.read())
         file.close()
 
+    def load_file(self):
+        result = QFileDialog.getOpenFileName(self, "Select Ice Cream File", "", "Excel Files (*)")
+        file_name = result[0]
     
+        if file_name:
+            self.selected_file = file_name
+            print(f"Selected: {self.selected_file}")
+            self.temperatures.clear()
+            self.profits.clear()
+            
+            with open(self.selected_file, 'r') as f:
+                reader = csv.reader(f)
+                next(reader)
+                
+                for row in reader:
+                    temp = float(row[0])  
+                    profit = float(row[1]) 
+                    self.temperatures.append(temp)
+                    self.profits.append(profit)
+
+            print(f"Loaded {len(self.temperatures)} rows successfully!")
+
+    
+
+
 if __name__ == "__main__":
     app = QApplication(sys.argv)
     window = IceCreamApp()
