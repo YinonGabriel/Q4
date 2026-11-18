@@ -1,5 +1,6 @@
 import sys
 import os
+import csv
 from PySide6.QtWidgets import (QApplication, QMainWindow, QWidget, QVBoxLayout, 
                                QHBoxLayout, QPushButton, QTableWidget, 
                                QTableWidgetItem, QLineEdit, QLabel, QMessageBox, 
@@ -56,9 +57,10 @@ class GradesApp(QMainWindow):
         self.load_stylesheet()
 
     def load_stylesheet(self):
-        
-        if os.path.exists("style.qss"):
-            with open("style.qss", "r") as f:
+        style_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), "style.qss")
+
+        if os.path.exists(style_path):
+            with open(style_path, "r", encoding="utf-8") as f:
                 self.setStyleSheet(f.read())
 
     def update_table_view(self):
@@ -74,7 +76,7 @@ class GradesApp(QMainWindow):
 
     def load_file(self):
         
-        result = QFileDialog.getOpenFileName(self, "Select Grades File", "", "Excel Files")
+        result = QFileDialog.getOpenFileName(self, "Select Grades File", "", "Excel Files (*)")
         file_name = result[0]
         
         if file_name:
@@ -113,8 +115,10 @@ class GradesApp(QMainWindow):
     def update_file(self):
         print("Update file clicked")
 
+
     def show_about(self):
-        print("About clicked")
+        about_text = "Name: Yinon Gabriel Debi\nGitHub: https://github.com/YinonGabriel/Q4"
+        QMessageBox.about(self, "About", about_text)
 
 
 if __name__ == "__main__":
