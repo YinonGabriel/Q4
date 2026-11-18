@@ -74,3 +74,31 @@ QHeaderView::section {
     padding: 9px 6px;
     font-weight: 700;
 }
+
+QFigureCanvas,
+FigureCanvasQTAgg {
+    background-color: #ffffff;
+    border: 1px solid #dbe3ec;
+    border-radius: 10px;
+}
+
+QToolBar,
+NavigationToolbar2QT {
+    background-color: #ffffff;
+    border: 1px solid #dbe3ec;
+    border-radius: 8px;
+    padding: 4px;
+    spacing: 4px;
+}
+
+QToolBar QToolButton {
+    background-color: transparent;
+    color: #334155;
+    border: none;
+    border-radius: 6px;
+    padding: 5px;
+}
+
+QToolBar QToolButton:hover {
+    background-color: #e2e8f0;
+}

@@ -19,12 +19,16 @@ class IceCreamApp(QWidget):
         self.selected_file = ""
 
         main_layout = QVBoxLayout(self)
+        main_layout.setContentsMargins(18, 18, 18, 18)
+        main_layout.setSpacing(12)
 
         self.load_btn = QPushButton("Load Ice Cream Data")
         self.load_btn.clicked.connect(self.load_file)
         main_layout.addWidget(self.load_btn)
 
         self.figure, self.ax = plt.subplots(figsize=(6, 4))
+        self.figure.patch.set_facecolor("#f8fafc")
+        self.ax.set_facecolor("#ffffff")
         self.canvas = FigureCanvas(self.figure)
         self.toolbar = NavigationToolbar(self.canvas, self)
 
@@ -38,9 +42,11 @@ class IceCreamApp(QWidget):
         self.load_stylesheet()
 
     def load_stylesheet(self):
-        file = open("style.qss", "r")
-        self.setStyleSheet(file.read())
-        file.close()
+        style_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), "style.qss")
+
+        if os.path.exists(style_path):
+            with open(style_path, "r", encoding="utf-8") as file:
+                self.setStyleSheet(file.read())
 
     def load_file(self):
         result = QFileDialog.getOpenFileName(self, "Select Ice Cream File", "", "Excel Files (*)")
@@ -67,10 +73,23 @@ class IceCreamApp(QWidget):
 
     def plot_graph(self):
         self.ax.clear()
-        self.ax.scatter(self.temperatures, self.profits, s=1)
+        self.ax.set_facecolor("#ffffff")
+        self.ax.scatter(
+            self.temperatures,
+            self.profits,
+            s=28,
+            color="#2563eb",
+            edgecolor="#ffffff",
+            linewidth=0.6,
+            alpha=0.8,
+        )
     
         self.ax.spines['top'].set_visible(False)
         self.ax.spines['right'].set_visible(False)
+        self.ax.spines['left'].set_color("#cbd5e1")
+        self.ax.spines['bottom'].set_color("#cbd5e1")
+        self.ax.grid(True, color="#e2e8f0", linestyle="--", linewidth=0.8)
+        self.ax.tick_params(colors="#64748b")
         
         self.ax.set_title("Ice Cream Profits vs Outside Temperature")
         self.ax.set_xlabel("Outside Temperature")
@@ -86,7 +105,13 @@ class IceCreamApp(QWidget):
             trendline_y.append(y_val)
             
         equation_text = f"y = {m:.2f}x + {b:.2f}"
-        self.ax.plot(self.temperatures, trendline_y, color="red", label=equation_text)
+        self.ax.plot(
+            self.temperatures,
+            trendline_y,
+            color="#f97316",
+            linewidth=2.5,
+            label=equation_text,
+        )
         
         self.ax.legend()
         self.canvas.draw()
