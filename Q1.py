@@ -98,5 +98,27 @@ class GradesApp(QMainWindow):
             
             self.update_table_view()
 
+    def apply_bonus(self):
+        bonus_val = self.bonus_input.text()
+        bonus = int(bonus_val)
+        for i in range(len(self.original_grades)):
+            new_grade = self.original_grades[i] + bonus
+            if new_grade > 100:
+                new_grade = 100
+        
+            self.corrected_grades[i] = new_grade
+        self.update_table_view()
 
-    
+
+    def update_file(self):
+        print("Update file clicked")
+
+    def show_about(self):
+        print("About clicked")
+
+
+if __name__ == "__main__":
+    app = QApplication(sys.argv)
+    window = GradesApp()
+    window.show()
+    sys.exit(app.exec())
