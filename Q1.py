@@ -55,4 +55,48 @@ class GradesApp(QMainWindow):
 
         self.load_stylesheet()
 
-   
+    def load_stylesheet(self):
+        
+        if os.path.exists("style.qss"):
+            with open("style.qss", "r") as f:
+                self.setStyleSheet(f.read())
+
+    def update_table_view(self):
+        self.table.clearContents()
+        for row in range(min(50, len(self.student_ids))):
+            id_item = QTableWidgetItem(str(self.student_ids[row]))
+            orig_item = QTableWidgetItem(str(self.original_grades[row]))
+            corr_item = QTableWidgetItem(str(self.corrected_grades[row]))
+            
+            self.table.setItem(row, 0, id_item)
+            self.table.setItem(row, 1, orig_item)
+            self.table.setItem(row, 2, corr_item)
+
+    def load_file(self):
+        
+        result = QFileDialog.getOpenFileName(self, "Select Grades File", "", "Excel Files")
+        file_name = result[0]
+        
+        if file_name:
+            self.selected_file = file_name
+            print(f"Selected: {self.selected_file}")
+            
+            self.student_ids.clear()
+            self.original_grades.clear()
+            self.corrected_grades.clear()
+            
+            with open(self.selected_file, 'r') as f:
+                reader = csv.reader(f)
+                next(reader)
+                
+                for row in reader:
+                    student_id = row[0]       
+                    grade = int(row[1])      
+                    self.student_ids.append(student_id)
+                    self.original_grades.append(grade)
+                    self.corrected_grades.append(grade)
+            
+            self.update_table_view()
+
+
+    
